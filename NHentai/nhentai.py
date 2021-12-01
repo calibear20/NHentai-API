@@ -1,6 +1,7 @@
 import logging
 from typing import Optional, Union
 from urllib.parse import urljoin
+import urllib.parse 
 from .utils.cache import Cache
 
 from .base_wrapper import BaseWrapper
@@ -31,20 +32,20 @@ class NHentai(BaseWrapper):
             You can access the dataclasses informations at `entities` package.
         """
 
-        print(f'INFO::Retrieving doujin with id {id}')
+        # print(f'INFO::Retrieving doujin with id {id}')
         id = str(id)
 
         if not id.isnumeric() or id[0] == '0':
-            print('ERROR::Maybe you mistyped the doujin id or it doesnt exists.')
+            # print('ERROR::Maybe you mistyped the doujin id or it doesnt exists.')
             return None
 
         SOUP = self._fetch(urljoin(self._API_URL, f'gallery/{id}'), is_json=True)
 
         if SOUP.get('error'):
-            print('ERROR::Maybe you mistyped the doujin id or it doesnt exists.')
+            # print('ERROR::Maybe you mistyped the doujin id or it doesnt exists.')
             return None
          
-        print(f'INFO::Sucessfully retrieved doujin {id}')
+        # print(f'INFO::Sucessfully retrieved doujin {id}')
 
         return Doujin.from_json(SOUP)
 
@@ -124,7 +125,7 @@ class NHentai(BaseWrapper):
 
         sort = sort.value if isinstance(sort, Sort) else sort
         params = {'query': query, 'page': page, 'sort': sort} if sort is not None else {'query': query, 'page': page}
-
+        params = urllib.parse.urlencode(params, safe=':+ ')
         SOUP = self._fetch(urljoin(self._API_URL, f'galleries/search'), params=params, is_json=True)
 
         DOUJINS = [Doujin.from_json(json_object=doujin) for doujin in SOUP.get('result')]
