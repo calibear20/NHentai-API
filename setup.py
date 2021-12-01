@@ -6,6 +6,7 @@ def readme():
         return f.read()
 
 env = os.getenv('environment_name') or 'dev'
+env = 'prd'
 
 if env == 'prd':
     setup(
